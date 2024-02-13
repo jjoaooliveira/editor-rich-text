@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 
 /**
  * [x] resolver problema com posição do ponteiro
@@ -9,36 +9,36 @@ import {useState} from 'react'
 const letters = ['Control', 'Del', 'Tab', 'Capslock', 'Shift', 'Alt'];
 function Editor() {
     const [textPosition, setTextPosition] = useState();
-    
+
     function insertNode(node, newNode) {
         setTextPosition(getCursorPosition());
-        const {next} = siblingsNodes(node);
-    
+        const { next } = siblingsNodes(node);
+
         if (textPosition === 0) {
             node.parentNode.insertBefore(newNode, node);
         } else {
-            next 
-            ? node.parentNode.insertBefore(newNode, next) 
-            : node.parentNode.appendChild(newNode);
+            next
+                ? node.parentNode.insertBefore(newNode, next)
+                : node.parentNode.appendChild(newNode);
             newNode.focus();
         }
     }
-    
+
     // função para criação de nodes
     function createNode(node, content) {
         const div = document.createElement('div');
         div.className = 'text';
         div.setAttribute('contentEditable', 'true');
 
-        if(content) {
+        if (content) {
             div.textContent = content;
         } else {
             const br = document.createElement('br');
             div.appendChild(br);
         }
         insertNode(node, div);
-    }   
-    
+    }
+
     function siblingsNodes(node) {
         const siblings = {
             previous: node.previousSibling,
@@ -50,21 +50,21 @@ function Editor() {
     function getCursorPosition() {
         const pos = window.getSelection();
         const position = pos.focusOffset;
-        
+
         return position;
     }
 
     // função que posiciona o cursor
-    function setCaret(node, tPos=0) {
+    function setCaret(node, tPos = 0) {
         const range = document.createRange();
         const sel = window.getSelection();
-        
-        if(node.textContent) {
+
+        if (node.textContent) {
             const elementLength = node.textContent.length;
             // console.log(`${tPos} - ${elementLength}`)
             tPos >= elementLength
-            ? range.setStart(node.childNodes[0], elementLength) 
-            : range.setStart(node.childNodes[0], tPos);
+                ? range.setStart(node.childNodes[0], elementLength)
+                : range.setStart(node.childNodes[0], tPos);
 
             range.collapse(false);
             sel.removeAllRanges();
@@ -77,13 +77,13 @@ function Editor() {
     function getPreviousContentToNext(node, pos) {
         const nodeContent = node.textContent;
         const arrayContent = Array.from(nodeContent);
-        
+
         const nextContent = arrayContent
-        .slice(pos, node.textContent.length)
-        .join('');
-        
+            .slice(pos, node.textContent.length)
+            .join('');
+
         const replacedNodeContent = nodeContent
-        .replace(nextContent, '');
+            .replace(nextContent, '');
 
         node.textContent = replacedNodeContent;
         return nextContent;
@@ -93,26 +93,22 @@ function Editor() {
         const nodeChilds = Array.from(node.childNodes);
         const br = document.createElement('br');
         const nodeHasBr = nodeChilds.some(element => element.nodeName === 'BR')
-        
-        if(content-1 === 0 && !nodeHasBr) {
+
+        if (content - 1 === 0 && !nodeHasBr) {
             node.appendChild(br);
-        }
-        // if(!node.textContent && !nodeHasBr) {
-        //     node.appendChild(br);
-        //     // nodeChilds.find(element => element.nodeName === 'BR')
-        // }     
+        }  
     }
 
     function Tab(node, pos) {
         const nodeContent = node.textContent;
         const arrayContent = Array.from(nodeContent);
-        
-        if(pos === nodeContent.length) {
+
+        if (pos === nodeContent.length) {
             node.innerHTML += '&emsp;';
         } else {
             const spacedContent = arrayContent
-            .splice(pos, nodeContent.length - pos, '&emsp;')
-            .join('');
+                .splice(pos, nodeContent.length - pos, '&emsp;')
+                .join('');
 
             node.innerHTML = arrayContent.join('') + spacedContent;
         }
@@ -121,8 +117,7 @@ function Editor() {
     function handleKeyDown(e) {
         const targetNode = e.target;
         const key = e.key;
-        const {previous, next} = siblingsNodes(targetNode);
-        // setTextPosition(getCursorPosition());
+        const { previous, next } = siblingsNodes(targetNode);
 
         if (e.ctrlKey && key === 'ArrowLeft') {
             e.preventDefault();
@@ -137,7 +132,7 @@ function Editor() {
         switch (key) {
             case 'Enter':
                 e.preventDefault();
-                if(getCursorPosition() === 0 || getCursorPosition() === targetNode.textContent.length) {
+                if (getCursorPosition() === 0 || getCursorPosition() === targetNode.textContent.length) {
                     createNode(targetNode);
                 } else {
                     const content = getPreviousContentToNext(targetNode, textPosition);
@@ -145,16 +140,16 @@ function Editor() {
                 }
                 setTextPosition(getCursorPosition());
                 break;
-                
+
             case 'Backspace':
                 const targetParentNode = targetNode.parentNode;
                 const targetNodeTextContent = targetNode.textContent;
-                const p = getCursorPosition()-1
+                const p = getCursorPosition() - 1
                 manageContent(targetNode, targetNodeTextContent.length);
-                
+
                 p <= 0
-                ? setTextPosition(0)
-                : setTextPosition(getCursorPosition()-1);
+                    ? setTextPosition(0)
+                    : setTextPosition(getCursorPosition() - 1);
 
                 if (previous && textPosition === 0) {
                     e.preventDefault();
@@ -165,8 +160,8 @@ function Editor() {
                     targetParentNode.removeChild(targetNode);
                 }
 
-            break;
-            
+                break;
+
             case 'ArrowLeft':
                 if (previous && textPosition === 0) {
                     e.preventDefault();
@@ -174,29 +169,29 @@ function Editor() {
                     setTextPosition(getCursorPosition());
 
                 } else {
-                    const p = getCursorPosition()-1
+                    const p = getCursorPosition() - 1
                     p < 0
-                    ? setTextPosition(0)
-                    : setTextPosition(getCursorPosition()-1);
+                        ? setTextPosition(0)
+                        : setTextPosition(getCursorPosition() - 1);
                 }
                 break;
-        
+
             case 'ArrowRight':
                 if (next && textPosition === targetNode.textContent.length) {
                     e.preventDefault();
                     setCaret(next);
                     setTextPosition(getCursorPosition());
                 } else {
-                    const p = getCursorPosition()+1
+                    const p = getCursorPosition() + 1
                     p > targetNode.textContent.length
-                    ? setTextPosition(targetNode.textContent.length)
-                    : setTextPosition(getCursorPosition()+1);
+                        ? setTextPosition(targetNode.textContent.length)
+                        : setTextPosition(getCursorPosition() + 1);
                 }
                 break;
-            
-            case 'ArrowDown': 
+
+            case 'ArrowDown':
                 e.preventDefault();
-                if(next) {
+                if (next) {
                     setCaret(next, textPosition);
                     setTextPosition(getCursorPosition());
                 } else {
@@ -207,7 +202,7 @@ function Editor() {
 
             case 'ArrowUp':
                 e.preventDefault();
-                if(previous) {
+                if (previous) {
                     setCaret(previous, textPosition);
                     setTextPosition(getCursorPosition());
                 } else {
@@ -215,20 +210,20 @@ function Editor() {
                     setTextPosition(getCursorPosition());
                 }
                 break;
-                
+
             case 'Tab':
                 e.preventDefault();
                 Tab(targetNode, textPosition);
-                setCaret(targetNode, textPosition+1);
+                setCaret(targetNode, textPosition + 1);
                 break;
 
             default:
                 manageContent(targetNode);
-                if(letters.includes(key)) {
+                if (letters.includes(key)) {
                     e.preventDefault();
                     return;
                 }
-                setTextPosition(getCursorPosition()+1);
+                setTextPosition(getCursorPosition() + 1);
                 break;
         }
     }
@@ -236,7 +231,7 @@ function Editor() {
     return (
         <>
             <div className="body-editor" onKeyDown={(e) => handleKeyDown(e)} onClick={() => setTextPosition(getCursorPosition())}>
-                <div className="text" contentEditable="true" suppressContentEditableWarning><br/></div>
+                <div className="text" contentEditable="true" suppressContentEditableWarning><br /></div>
             </div>
             <p>{textPosition}</p>
         </>
