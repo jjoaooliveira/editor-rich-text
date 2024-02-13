@@ -103,7 +103,7 @@ function Editor() {
         const nodeContent = node.textContent;
         const arrayContent = Array.from(nodeContent);
 
-        if (pos === nodeContent.length) {
+        if (node.textContent && pos === nodeContent.length) {
             node.innerHTML += '&emsp;';
         } else {
             const spacedContent = arrayContent
@@ -120,16 +120,19 @@ function Editor() {
         const { previous, next } = siblingsNodes(targetNode);
 
         if (e.ctrlKey && key === 'ArrowLeft') {
-            e.preventDefault();
+            // e.preventDefault();
             setCaret(targetNode, 0);
         }
 
         if (e.ctrlKey && key === 'ArrowRight') {
-            e.preventDefault();
+            // e.preventDefault();
             setCaret(targetNode, targetNode.textContent.length);
         }
 
         switch (key) {
+            case 'Teste':
+                break;
+                
             case 'Enter':
                 e.preventDefault();
                 if (getCursorPosition() === 0 || getCursorPosition() === targetNode.textContent.length) {
@@ -221,7 +224,7 @@ function Editor() {
                 manageContent(targetNode);
                 if (letters.includes(key)) {
                     e.preventDefault();
-                    return;
+                    break;
                 }
                 setTextPosition(getCursorPosition() + 1);
                 break;
