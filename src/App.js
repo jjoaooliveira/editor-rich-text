@@ -1,4 +1,4 @@
-import Editor from './Editor';
+import TextEditor from './components/TextEditor'
 import './App.css';
 
 export default function App() {
@@ -7,15 +7,7 @@ export default function App() {
     <div className="App">
       <div className="container">
         <div className="editor">
-          <ul className="format-options">
-            <li>T</li>
-            <li className="roboto-font"><strong>B</strong></li>
-            <li><em>I</em></li>
-            <li><ins>S</ins></li>
-            <li>&lt; &gt;</li>
-          </ul>
-          <hr />
-          <Editor />
+          <TextEditor></TextEditor>
         </div>
       </div>
     </div>
