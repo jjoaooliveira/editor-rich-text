@@ -82,3 +82,11 @@ ul>li {
 .material-symbols-outlined {
     font-size: 21px;
 }
+
+.code-container {
+    border: 1px solid black;
+    overflow: auto;
+    background-color: #00000018;
+    padding: 1rem;
+    margin: 2rem;
+}

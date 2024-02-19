@@ -14,6 +14,11 @@ const CustomEditor = {
         return !!match
     },
 
+    isDelMarkActive(editor) {
+        const marks = Editor.marks(editor)
+        return marks ? marks.del === true : false
+    },
+
     isHead2BlockActive(editor) {
         const [match] = Editor.nodes(editor, {
             match: n => n.type === 'heading' && n.level === 2 ,
@@ -67,6 +72,15 @@ const CustomEditor = {
             Editor.removeMark(editor, 'em')
         } else {
             Editor.addMark(editor, 'em', true)
+        }
+    },
+
+    toggleDelMark(editor) {
+        const isActive = CustomEditor.isDelMarkActive(editor)
+        if (isActive) {
+            Editor.removeMark(editor, 'del')
+        } else {
+            Editor.addMark(editor, 'del', true)
         }
     },
 
@@ -130,7 +144,7 @@ const initialValue = [
         ],
     },
 ]
-//[] Implementar placeholder
+
 const TextEditor = () => {
     const [editor] = useState(() => withReact(createEditor()));
 
@@ -177,6 +191,11 @@ const TextEditor = () => {
             case '2': {
                 e.preventDefault()
                 CustomEditor.toggleHead2Block(editor)
+                break
+            }
+            case 'd': {
+                e.preventDefault()
+                CustomEditor.toggleDelMark(editor)
                 break
             }
 
@@ -232,6 +251,9 @@ const Leaf = props => {
 
     if (props.leaf.ins) {
         c = <ins>{c}</ins>
+    }
+    if (props.leaf.del) {
+        c = <del>{c}</del>
     }
 
     return (
